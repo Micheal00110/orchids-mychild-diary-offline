@@ -49,7 +49,7 @@ export default function RoleSelection({ onComplete }: Props) {
 
   if (step === 'role') {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
+      <div className="min-h-screen flex flex-col max-w-md mx-auto" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
         {/* Header */}
         <div className="px-6 pt-12 pb-8" style={{ background: 'linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%)' }}>
           <div className="text-white/70 text-sm mb-1">Welcome to</div>
@@ -59,10 +59,11 @@ export default function RoleSelection({ onComplete }: Props) {
           <p className="text-white/80 text-sm">Your digital school diary. Choose how you&apos;ll use this app.</p>
         </div>
 
-        <div className="flex-1 px-5 pt-8 pb-6 fade-in">
-          <p className="text-pencil-gray/70 text-sm text-center mb-6 font-medium">I am a...</p>
+        <div className="flex-1 flex items-center justify-center px-5 pt-8 pb-6 fade-in">
+          <div className="w-full max-w-sm">
+            <p className="text-pencil-gray/70 text-sm text-center mb-6 font-medium">I am a...</p>
 
-          <div className="space-y-4">
+            <div className="space-y-4">
             {/* Teacher card */}
             <button
               onClick={() => { setRole('teacher'); setStep('teacher-profile') }}
@@ -115,13 +116,14 @@ export default function RoleSelection({ onComplete }: Props) {
           <p className="text-center text-xs text-pencil-gray/40 mt-8">
             Your data is synced securely. No passwords needed.
           </p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
+    <div className="min-h-screen flex flex-col max-w-md mx-auto" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
       <div className="px-6 pt-12 pb-6" style={{ background: 'linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%)' }}>
         <button
           onClick={() => setStep('role')}
@@ -140,8 +142,9 @@ export default function RoleSelection({ onComplete }: Props) {
         <p className="text-white/70 text-sm">Tell us a bit about yourself</p>
       </div>
 
-      <div className="flex-1 px-5 pt-6 pb-6 fade-in">
-        <div className="rounded-2xl p-6 shadow-page" style={{
+      <div className="flex-1 flex items-center justify-center px-5 pt-6 pb-6 fade-in">
+        <div className="w-full max-w-sm">
+          <div className="rounded-2xl p-6 shadow-page" style={{
           background: '#FDF6E3',
           backgroundImage: 'linear-gradient(rgba(212,197,169,0.25) 1px, transparent 1px)',
           backgroundSize: '100% 32px',
@@ -186,6 +189,7 @@ export default function RoleSelection({ onComplete }: Props) {
               {loading ? 'Setting up...' : 'Continue →'}
             </button>
           </form>
+        </div>
         </div>
       </div>
     </div>

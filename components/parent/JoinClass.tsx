@@ -58,7 +58,7 @@ export default function JoinClass({ session, onJoined }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
+    <div className="min-h-screen flex flex-col max-w-md mx-auto" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
       <div className="px-6 pt-12 pb-6" style={{ background: 'linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%)' }}>
         {step === 'child' && (
           <button onClick={() => { setStep('code'); setFoundClass(null); setError('') }}

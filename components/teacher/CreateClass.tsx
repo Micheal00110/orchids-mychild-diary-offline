@@ -46,7 +46,7 @@ export default function CreateClass({ session, onCreate }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
+    <div className="min-h-screen flex flex-col max-w-md mx-auto" style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}>
       <div className="px-6 pt-12 pb-6" style={{ background: 'linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%)' }}>
         <div className="text-4xl mb-2">🏫</div>
         <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'var(--font-caveat, cursive)' }}>Create Your Class</h1>

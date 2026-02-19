@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyChild Diary - App Progress Screenshots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .screen-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .screen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .phone-frame {
+            background: #000;
+            padding: 12px;
+            border-radius: 40px;
+            position: relative;
+            aspect-ratio: 9/16;
+            max-width: 300px;
+            margin: 0 auto;
+            box-shadow: inset 0 0 0 2px #1a1a1a;
+            overflow: hidden;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 25px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .phone-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: #000;
+            border-radius: 2px;
+            z-index: 10;
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%);
+            color: #4A4A4A;
+            font-size: 12px;
+            overflow: hidden;
+        }
+
+        .screen-header {
+            background: linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%);
+            color: white;
+            padding: 30px 20px 20px;
+            text-align: center;
+        }
+
+        .screen-header h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-family: 'Caveat', cursive;
+        }
+
+        .screen-header p {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .screen-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .button-secondary {
+            background: rgba(44, 95, 138, 0.1);
+            color: #2C5F8A;
+        }
+
+        .card {
+            background: #FDF6E3;
+            border: 2px solid #D4C5A9;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 10px;
+        }
+
+        .card-header {
+            color: #2C5F8A;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .card-content {
+            color: #666;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .screen-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2C5F8A;
+        }
+
+        .emoji {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .description-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .description-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .description-section h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .description-section p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .description-section ul {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .description-section code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .flow-diagram {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            color: #333;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-item strong {
+            color: #667eea;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        .tab {
+            background: rgba(44, 95, 138, 0.1);
+            color: #2C5F8A;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%);
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 50px;
+            opacity: 0.9;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .screens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .description-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 MyChild Diary</h1>
+            <p>App Progress & Screenshots - February 2026</p>
+        </header>
+
+        <!-- Teacher Flow -->
+        <div class="description-section">
+            <h2>🧑‍🏫 Teacher User Flow</h2>
+            <div class="flow-diagram">Splash Screen (1.6s)
+         ↓
+Role Selection (Select "Teacher")
+         ↓
+Teacher Profile Setup
+         ↓
+Create Class (if new)
+         ↓
+Teacher Dashboard
+    ├─ Diary Tab
+    ├─ Students Tab (Chat with Parents)
+    └─ Settings Tab</div>
+        </div>
+
+        <!-- Teacher Screens -->
+        <h2 style="color: white; text-align: center; margin: 40px 0 30px;">👨‍🏫 Teacher Screens</h2>
+        <div class="screens-grid">
+            <!-- Splash Screen -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
+                                <div class="emoji">📚</div>
+                                <div style="text-align: center; font-family: 'Caveat', cursive; font-size: 32px; font-weight: bold; color: #2C5F8A;">MyChild Diary</div>
+                                <div style="font-size: 11px; color: #999; text-align: center;">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">1. Splash Screen</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Auto-transitions after 1.6 seconds</p>
+                </div>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <h3>I am a...</h3>
+                                <p>Choose your role</p>
+                            </div>
+                            <div class="screen-body">
+                                <div class="card" style="border-top: 3px solid #2C5F8A; cursor: pointer;">
+                                    <div style="font-size: 16px; margin-bottom: 6px;">🧑‍🏫 Teacher</div>
+                                    <div class="card-content">Create classes, fill daily entries</div>
+                                </div>
+                                <div class="card" style="border-top: 3px solid #4CAF50; cursor: pointer;">
+                                    <div style="font-size: 16px; margin-bottom: 6px;">👨‍👩‍👧 Parent</div>
+                                    <div class="card-content">View child's diary, sign entries</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">2. Role Selection</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Choose between Teacher or Parent</p>
+                </div>
+            </div>
+
+            <!-- Teacher Profile -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="emoji">🧑‍🏫</div>
+                                <h3>Teacher Profile</h3>
+                                <p>Tell us about yourself</p>
+                            </div>
+                            <div class="screen-body">
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Full Name</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">Mr. James Odhiambo</div>
+                                
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">School Name</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">St. Mary's Primary</div>
+                                
+                                <button class="button">Continue →</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">3. Teacher Profile Setup</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Enter personal information</p>
+                </div>
+            </div>
+
+            <!-- Create Class -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="emoji">🏫</div>
+                                <h3>Create Your Class</h3>
+                            </div>
+                            <div class="screen-body">
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Class Name</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">Grade 5 Blue</div>
+                                
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Grade/Level</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">Grade 5 ▼</div>
+                                
+                                <button class="button">Create Class →</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">4. Create Class</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Set up a new class</p>
+                </div>
+            </div>
+
+            <!-- Teacher Dashboard - Diary -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <h3>Today's Diary</h3>
+                                <p>Monday, Feb 19</p>
+                            </div>
+                            <div class="screen-body" style="font-size: 9px;">
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Subject</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 6px; background: rgba(253, 246, 227, 0.8); margin-bottom: 10px;">Mathematics - Chapter 5</div>
+                                
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Homework</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 6px; background: rgba(253, 246, 227, 0.8); margin-bottom: 10px;">Ex 5.1 pages 45-47</div>
+                                
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Comment</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 6px; background: rgba(253, 246, 227, 0.8); margin-bottom: 10px;">Great participation today!</div>
+                                
+                                <button class="button">Save Entry</button>
+                            </div>
+                            <div style="padding: 0 10px 10px; display: flex; gap: 6px; border-top: 1px solid #DDD; margin-top: auto; padding-top: 10px;">
+                                <div class="tab active">📓 Diary</div>
+                                <div class="tab">👥 Students</div>
+                                <div class="tab">⚙️ Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">5. Teacher Dashboard - Diary</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Fill daily entries for students</p>
+                </div>
+            </div>
+
+            <!-- Teacher Dashboard - Students -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <h3>Grade 5 Blue</h3>
+                                <p>12 students joined</p>
+                            </div>
+                            <div class="screen-body" style="font-size: 9px;">
+                                <div class="card" style="border-top: 3px solid #2C5F8A;">
+                                    <div class="card-header">🔑 Class Code</div>
+                                    <div style="font-size: 20px; font-weight: bold; color: #2C5F8A; text-align: center; margin: 8px 0;">ABC123</div>
+                                    <button class="button button-secondary" style="font-size: 9px; padding: 6px;">Copy</button>
+                                </div>
+                                
+                                <div style="font-weight: 600; margin-top: 10px; color: #2C5F8A;">👥 Students (3)</div>
+                                <div style="font-size: 8px; padding: 6px; background: #f9f9f9; border-radius: 6px; margin-top: 4px;">
+                                    John Kamau 💬<br/>
+                                    Sarah Kipchoge 💬<br/>
+                                    Grace Muigai 💬
+                                </div>
+                            </div>
+                            <div style="padding: 0 10px 10px; display: flex; gap: 6px; border-top: 1px solid #DDD; margin-top: auto; padding-top: 10px;">
+                                <div class="tab">📓 Diary</div>
+                                <div class="tab active">👥 Students</div>
+                                <div class="tab">⚙️ Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">6. Teacher Dashboard - Students</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Manage class roster & chat</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent Flow -->
+        <div class="description-section">
+            <h2>👨‍👩‍👧 Parent User Flow</h2>
+            <div class="flow-diagram">Splash Screen (1.6s)
+         ↓
+Role Selection (Select "Parent")
+         ↓
+Parent Profile Setup
+         ↓
+Join Class (Enter Code)
+         ↓
+Parent Dashboard
+    ├─ Diary Tab (Chat with Teacher)
+    └─ Settings Tab</div>
+        </div>
+
+        <!-- Parent Screens -->
+        <h2 style="color: white; text-align: center; margin: 40px 0 30px;">👨‍👩‍👧 Parent Screens</h2>
+        <div class="screens-grid">
+            <!-- Parent Profile -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="emoji">👨‍👩‍👧</div>
+                                <h3>Parent Profile</h3>
+                                <p>Tell us about yourself</p>
+                            </div>
+                            <div class="screen-body">
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Name (Parent)</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">Mrs. Wanjiku Kamau</div>
+                                
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">School Name</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">St. Mary's Primary</div>
+                                
+                                <button class="button">Continue →</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">7. Parent Profile Setup</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Enter parent information</p>
+                </div>
+            </div>
+
+            <!-- Join Class -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="emoji">🔑</div>
+                                <h3>Join a Class</h3>
+                                <p>Enter the 6-character code</p>
+                            </div>
+                            <div class="screen-body">
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Class Code</div>
+                                <div style="border: 2px solid #D4C5A9; border-radius: 8px; padding: 12px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 20px; font-weight: bold; color: #2C5F8A; text-align: center; font-family: monospace; letter-spacing: 2px;">ABC123</div>
+                                
+                                <button class="button">Continue →</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">8. Join Class</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Step 1: Enter class code</p>
+                </div>
+            </div>
+
+            <!-- Join Class - Child Name -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="emoji">👶</div>
+                                <h3>Join Grade 5 Blue</h3>
+                                <p>Enter your child's name</p>
+                            </div>
+                            <div class="screen-body">
+                                <div style="font-size: 10px; font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Child's Name</div>
+                                <div style="border: 1px solid #D4C5A9; border-radius: 8px; padding: 8px; background: rgba(253, 246, 227, 0.8); margin-bottom: 12px; font-size: 10px;">John Kamau</div>
+                                
+                                <button class="button">Join Class →</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">9. Join Class - Child Name</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Step 2: Complete joining</p>
+                </div>
+            </div>
+
+            <!-- Parent Dashboard - Diary -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <h3>John's Diary</h3>
+                                <p>Monday, Feb 19</p>
+                            </div>
+                            <div class="screen-body" style="font-size: 9px;">
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Subject</div>
+                                <div style="background: #f9f9f9; border-radius: 8px; padding: 6px; margin-bottom: 10px;">Mathematics - Chapter 5</div>
+                                
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Homework</div>
+                                <div style="background: #f9f9f9; border-radius: 8px; padding: 6px; margin-bottom: 10px;">Ex 5.1 pages 45-47</div>
+                                
+                                <div style="font-weight: 600; color: #2C5F8A; margin-bottom: 4px;">Teacher Comment</div>
+                                <div style="background: #f9f9f9; border-radius: 8px; padding: 6px; margin-bottom: 10px;">Great participation today!</div>
+                                
+                                <button class="button">Sign Entry ✓</button>
+                                <button class="button button-secondary">Chat with Teacher 💬</button>
+                            </div>
+                            <div style="padding: 0 10px 10px; display: flex; gap: 6px; border-top: 1px solid #DDD; margin-top: auto; padding-top: 10px;">
+                                <div class="tab active">📓 Diary</div>
+                                <div class="tab">⚙️ Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">10. Parent Dashboard - Diary</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">View child's daily entries</p>
+                </div>
+            </div>
+
+            <!-- Chat Screen -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div style="background: linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%); color: white; padding: 12px; font-size: 10px;">
+                                <div style="font-weight: 600;">Grade 5 Blue Teacher</div>
+                                <div style="font-size: 8px; opacity: 0.8;">Re: John Kamau • Grade 5 Blue</div>
+                            </div>
+                            <div class="screen-body" style="font-size: 8px; gap: 8px;">
+                                <div style="background: rgba(44, 95, 138, 0.1); padding: 8px; border-radius: 8px; width: 80%; margin-right: auto;">
+                                    How is John doing with the homework?
+                                </div>
+                                <div style="background: linear-gradient(135deg, #2C5F8A 0%, #1a3d5c 100%); color: white; padding: 8px; border-radius: 8px; width: 80%; margin-left: auto;">
+                                    He finished it all! Great effort.
+                                </div>
+                                <div style="background: rgba(44, 95, 138, 0.1); padding: 8px; border-radius: 8px; width: 80%; margin-right: auto;">
+                                    That's wonderful! Thanks for letting me know.
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #DDD; padding: 8px; display: flex; gap: 4px;">
+                                <input type="text" placeholder="Type..." style="flex: 1; border: 1px solid #DDD; border-radius: 6px; padding: 6px; font-size: 8px;">
+                                <button class="button" style="width: auto; padding: 6px 10px; font-size: 9px;">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">11. Chat Screen</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Real-time messaging</p>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="screen-card">
+                <div style="padding: 20px;">
+                    <div class="phone-frame">
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <h3>My Account</h3>
+                                <p>Settings</p>
+                            </div>
+                            <div class="screen-body" style="font-size: 9px;">
+                                <div class="card">
+                                    <div class="card-header">Name</div>
+                                    <div class="card-content">Mrs. Wanjiku Kamau</div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header">Role</div>
+                                    <div class="card-content">Parent 👨‍👩‍👧</div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header">School</div>
+                                    <div class="card-content">St. Mary's Primary</div>
+                                </div>
+                                
+                                <button class="button" style="margin-top: 10px; background: #ff6b6b;">Logout</button>
+                            </div>
+                            <div style="padding: 0 10px 10px; display: flex; gap: 6px; border-top: 1px solid #DDD; margin-top: auto; padding-top: 10px;">
+                                <div class="tab">📓 Diary</div>
+                                <div class="tab active">⚙️ Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="text-align: center; margin-top: 15px; color: #333;">12. Settings Screen</h3>
+                    <p style="text-align: center; color: #666; font-size: 12px;">Account & preferences</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Summary -->
+        <div class="description-section">
+            <h2>✨ Key Features</h2>
+            
+            <h3>🧑‍🏫 Teacher Features</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>📚 Create Classes</strong><br/>
+                    Set up unlimited classes with unique codes
+                </div>
+                <div class="feature-item">
+                    <strong>📓 Daily Entries</strong><br/>
+                    Fill diary entries for each student
+                </div>
+                <div class="feature-item">
+                    <strong>👥 Manage Roster</strong><br/>
+                    Track student participation
+                </div>
+                <div class="feature-item">
+                    <strong>💬 Chat</strong><br/>
+                    Communicate with parents in real-time
+                </div>
+            </div>
+
+            <h3>👨‍👩‍👧 Parent Features</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>🔑 Join Classes</strong><br/>
+                    Use 6-character code to link
+                </div>
+                <div class="feature-item">
+                    <strong>👀 View Diary</strong><br/>
+                    See child's daily progress
+                </div>
+                <div class="feature-item">
+                    <strong>✍️ Sign Entries</strong><br/>
+                    Digital signature on entries
+                </div>
+                <div class="feature-item">
+                    <strong>💬 Chat</strong><br/>
+                    Direct communication with teacher
+                </div>
+            </div>
+        </div>
+
+        <!-- Design System -->
+        <div class="description-section">
+            <h2>🎨 Design System</h2>
+            
+            <h3>Color Palette</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 15px 0;">
+                <div style="text-align: center;">
+                    <div style="width: 100%; height: 80px; background: #2C5F8A; border-radius: 8px; margin-bottom: 10px;"></div>
+                    <strong>#2C5F8A</strong><br/><small>Primary Blue</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 100%; height: 80px; background: #4CAF50; border-radius: 8px; margin-bottom: 10px;"></div>
+                    <strong>#4CAF50</strong><br/><small>Green</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 100%; height: 80px; background: #FDF6E3; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></div>
+                    <strong>#FDF6E3</strong><br/><small>Cream</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 100%; height: 80px; background: #F5EDD6; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></div>
+                    <strong>#F5EDD6</strong><br/><small>Parchment</small>
+                </div>
+            </div>
+
+            <h3>Typography</h3>
+            <ul style="margin-left: 20px; color: #555; line-height: 2;">
+                <li><strong>Headings:</strong> Caveat (cursive) - 24-32px</li>
+                <li><strong>Body Text:</strong> Noto Sans - 12-14px</li>
+                <li><strong>Labels:</strong> Noto Sans - 10-12px</li>
+                <li><strong>Small Text:</strong> 9-11px for secondary info</li>
+            </ul>
+
+            <h3>Layout</h3>
+            <ul style="margin-left: 20px; color: #555; line-height: 2;">
+                <li><strong>Container Width:</strong> max-w-md (448px)</li>
+                <li><strong>Centered:</strong> mx-auto on all pages</li>
+                <li><strong>Mobile First:</strong> 480px viewport width</li>
+                <li><strong>Padding:</strong> 20-24px horizontal, 30-40px vertical</li>
+            </ul>
+        </div>
+
+        <!-- Technical Stack -->
+        <div class="description-section">
+            <h2>🚀 Technical Stack</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>Frontend</strong><br/>
+                    Next.js 15+ (React)
+                </div>
+                <div class="feature-item">
+                    <strong>Styling</strong><br/>
+                    Tailwind CSS
+                </div>
+                <div class="feature-item">
+                    <strong>Database</strong><br/>
+                    Supabase (PostgreSQL)
+                </div>
+                <div class="feature-item">
+                    <strong>Real-time</strong><br/>
+                    Supabase Realtime
+                </div>
+                <div class="feature-item">
+                    <strong>State</strong><br/>
+                    React Hooks + localStorage
+                </div>
+                <div class="feature-item">
+                    <strong>Auth</strong><br/>
+                    Session-based (no passwords)
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✅ All pages are responsive, centered, and follow consistent design patterns</p>
+            <p>🎯 Max-width constraint (448px) applied across entire app</p>
+            <p style="margin-top: 20px; font-size: 0.9em;">Generated: February 19, 2026 | Version: 0.1.0</p>
+        </div>
+    </div>
+</body>
+</html>

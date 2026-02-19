@@ -38,7 +38,7 @@ export default function ProfileSetup({ onComplete }: Props) {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="min-h-screen flex flex-col max-w-md mx-auto"
       style={{ background: 'linear-gradient(160deg, #FDF6E3 0%, #EDE0C4 100%)' }}
     >
       {/* Header */}
