@@ -1,61 +1,34 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getProfile, type ChildProfile } from '@/lib/db'
-import ProfileSetup from '@/components/ProfileSetup'
-import DiaryPage from '@/components/DiaryPage'
-import HistoryView from '@/components/HistoryView'
-import SettingsView from '@/components/SettingsView'
-import BottomNav from '@/components/BottomNav'
+import { getSession, type UserSession } from '@/lib/store'
 import SplashScreen from '@/components/SplashScreen'
-
-type View = 'today' | 'history' | 'settings'
+import RoleSelection from '@/components/RoleSelection'
+import TeacherApp from '@/components/teacher/TeacherApp'
+import ParentApp from '@/components/parent/ParentApp'
 
 export default function Home() {
   const [splash, setSplash] = useState(true)
-  const [profile, setProfile] = useState<ChildProfile | null>(null)
-  const [view, setView] = useState<View>('today')
-  const [historyDate, setHistoryDate] = useState<string | null>(null)
+  const [session, setSession] = useState<UserSession | null | undefined>(undefined)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setSplash(false)
-      setProfile(getProfile())
-    }, 1800)
+      setSession(getSession())
+    }, 1600)
     return () => clearTimeout(timer)
   }, [])
 
   if (splash) return <SplashScreen />
+  if (session === undefined) return <SplashScreen />
 
-  if (!profile) {
-    return <ProfileSetup onComplete={(p) => setProfile(p)} />
+  if (!session) {
+    return <RoleSelection onComplete={(s) => setSession(s)} />
   }
 
-  return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto relative">
-      <main className="flex-1 pb-20">
-        {view === 'today' && (
-          <DiaryPage profile={profile} />
-        )}
-        {view === 'history' && (
-          <HistoryView
-            profile={profile}
-            selectedDate={historyDate}
-            onSelectDate={setHistoryDate}
-          />
-        )}
-        {view === 'settings' && (
-          <SettingsView
-            profile={profile}
-            onProfileUpdated={(p) => setProfile(p)}
-            onResetApp={() => {
-              setProfile(null)
-              setView('today')
-            }}
-          />
-        )}
-      </main>
-      <BottomNav current={view} onChange={(v) => { setView(v); setHistoryDate(null) }} />
-    </div>
-  )
+  if (session.role === 'teacher') {
+    return <TeacherApp session={session} onLogout={() => setSession(null)} />
+  }
+
+  return <ParentApp session={session} onLogout={() => setSession(null)} />
 }
