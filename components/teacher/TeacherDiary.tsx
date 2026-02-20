@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getTodayISO, formatDisplayDate, type UserSession, type ClassInfo, type Membership } from '@/lib/store'
+import TeacherAnalytics from './TeacherAnalytics'
 
 interface DiaryEntry {
   id?: string
@@ -19,15 +20,19 @@ interface Props {
   session: UserSession
   classInfo: ClassInfo
   memberships: Membership[]
+  onChat?: (m: Membership) => void
 }
 
-export default function TeacherDiary({ session, classInfo, memberships }: Props) {
+export default function TeacherDiary({ session, classInfo, memberships, onChat }: Props) {
   const [selectedDate, setSelectedDate] = useState(getTodayISO())
   const [selectedMembership, setSelectedMembership] = useState<Membership | null>(null)
   const [entries, setEntries] = useState<Record<string, DiaryEntry>>({})
   const [saving, setSaving] = useState<Record<string, boolean>>({})
   const [saved, setSaved] = useState<Record<string, boolean>>({})
   const [dirty, setDirty] = useState<Record<string, boolean>>({})
+  const [messageText, setMessageText] = useState('')
+  const [sendingMessage, setSendingMessage] = useState(false)
+  const [sendingDiary, setSendingDiary] = useState(false)
 
   // Load entries for all students on selected date
   useEffect(() => {
@@ -100,6 +105,54 @@ export default function TeacherDiary({ session, classInfo, memberships }: Props)
     }
   }
 
+  async function handleSendMessage() {
+    if (!messageText.trim() || !selectedMembership) return
+    setSendingMessage(true)
+    await supabase.from('messages').insert({
+      membership_id: selectedMembership.id,
+      class_id: classInfo.id,
+      sender_id: session.id,
+      sender_role: 'teacher',
+      content: messageText.trim(),
+    })
+    setMessageText('')
+    setSendingMessage(false)
+  }
+
+  async function handleSendDiaryEntry() {
+    if (!selectedMembership || !currentEntry) return
+    setSendingDiary(true)
+
+    // Format date for message context
+    let formattedDate = ''
+    if (currentEntry.date) {
+      const d = new Date(currentEntry.date)
+      formattedDate = d.toLocaleDateString('en-KE', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+    } else {
+      const d = new Date()
+      formattedDate = d.toLocaleDateString('en-KE', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+    }
+
+    // Combine all diary info into a formatted message
+    const diaryContent = [
+      `Date: ${formattedDate}`,
+      currentEntry.subject && `📚 Subject: ${currentEntry.subject}`,
+      currentEntry.homework && `📝 Homework: ${currentEntry.homework}`,
+      currentEntry.teacher_comment && `💬 Note: ${currentEntry.teacher_comment}`,
+    ].filter(Boolean).join('\n\n')
+
+    if (diaryContent) {
+      await supabase.from('messages').insert({
+        membership_id: selectedMembership.id,
+        class_id: classInfo.id,
+        sender_id: session.id,
+        sender_role: 'teacher',
+        content: diaryContent,
+      })
+    }
+    setSendingDiary(false)
+  }
+
   // Auto-save after 1s of inactivity per student
   useEffect(() => {
     const timers: Record<string, ReturnType<typeof setTimeout>> = {}
@@ -161,6 +214,13 @@ export default function TeacherDiary({ session, classInfo, memberships }: Props)
       </div>
 
       <div className="px-4 py-4">
+        {/* Analytics Section */}
+        {isToday && (
+          <div className="mb-6">
+            <TeacherAnalytics classInfo={classInfo} />
+          </div>
+        )}
+
         {memberships.length === 0 ? (
           <div className="rounded-2xl p-8 text-center shadow-page" style={{ background: '#FDF6E3' }}>
             <div className="text-5xl mb-4">📬</div>
@@ -223,6 +283,80 @@ export default function TeacherDiary({ session, classInfo, memberships }: Props)
               All Students
             </button>
 
+            {/* Chat button */}
+            {onChat && (
+              <button
+                onClick={() => onChat(selectedMembership)}
+                className="w-full mb-4 py-3 rounded-xl flex items-center justify-center gap-2 font-medium text-sm active:scale-95 transition-transform"
+                style={{ background: 'rgba(44,95,138,0.1)', color: '#2C5F8A', minHeight: 44 }}>
+                <span>💬</span>
+                Message {selectedMembership.child_name}'s Parent
+              </button>
+            )}
+
+            {/* Quick Message & Ensure Work - FIRST ELEMENT */}
+            <div className="rounded-2xl overflow-hidden shadow-notebook mb-4" style={{ background: '#FDF6E3' }}>
+              {/* Student name bar */}
+              <div className="px-5 py-3 flex items-center gap-3 border-b border-rule-line">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #2C5F8A, #7EB3D4)' }}>
+                  {selectedMembership.child_name.charAt(0).toUpperCase()}
+                </div>
+                <span className="font-semibold text-pencil-gray">{selectedMembership.child_name}</span>
+              </div>
+
+              {/* Message Input Section */}
+              <div className="px-5 py-4 border-b border-rule-line">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-base">💭</span>
+                  <span className="text-xs font-semibold text-ink-blue uppercase tracking-wider">Quick Message</span>
+                </div>
+                <div className="flex gap-2 items-end">
+                  <textarea
+                    value={messageText}
+                    onChange={(e) => { setMessageText(e.target.value); e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px' }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage() } }}
+                    placeholder="Send a message to parent..."
+                    rows={1}
+                    className="flex-1 text-pencil-gray placeholder-pencil-gray/40 text-sm"
+                    style={{ background: 'rgba(253,246,227,0.8)', border: '1px solid #D4C5A9', borderRadius: 8, padding: '8px 12px', fontFamily: 'var(--font-noto)', resize: 'none', outline: 'none', minHeight: 36 }}
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!messageText.trim() || sendingMessage}
+                    className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center active:scale-95 transition-all disabled:opacity-40"
+                    style={{ background: 'linear-gradient(135deg, #2C5F8A, #1a3d5c)', minHeight: 'auto' }}>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M2 9h14M9 2l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Work Ensured Section */}
+              {currentEntry && (
+                <div className="px-5 py-4">
+                  <button onClick={() => updateEntry(selectedMembership.id, 'signed', !currentEntry.signed)}
+                    className="flex items-center gap-4 py-2 w-full active:scale-95 transition-transform" style={{ minHeight: 44 }}>
+                    <div className="w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0"
+                      style={{ borderColor: currentEntry.signed ? '#4CAF50' : '#D4C5A9', background: currentEntry.signed ? '#4CAF5020' : 'transparent' }}>
+                      {currentEntry.signed ? (
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M2 6l2.5 2.5L10 3" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : <div className="w-2 h-2 rounded-full bg-gray-400" />}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium" style={{ color: currentEntry.signed ? '#4CAF50' : '#9E9E9E' }}>
+                        {currentEntry.signed ? 'Work Ensured ✓' : 'Mark Work as Ensured'}
+                      </div>
+                      <div className="text-xs text-pencil-gray/50">Check when ready for parent</div>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="rounded-2xl overflow-hidden shadow-notebook" style={{ background: '#FDF6E3' }}>
               {/* Student name bar */}
               <div className="px-5 py-3 flex items-center gap-3 border-b border-rule-line">
@@ -271,23 +405,55 @@ export default function TeacherDiary({ session, classInfo, memberships }: Props)
                     placeholder="Any note for the parent..."
                     onChange={(v) => updateEntry(selectedMembership.id, 'teacher_comment', v)} multiline rows={3} />
                   <div className="my-4 h-px" style={{ background: '#D4C5A9' }} />
-                  {/* Parent signed status (read-only for teacher) */}
-                  <div className="flex items-center gap-3 py-1">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: currentEntry.signed ? '#4CAF50' : '#E0E0E0' }}>
-                      {currentEntry.signed ? (
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M2 6l2.5 2.5L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      ) : <div className="w-2 h-2 rounded-full bg-gray-400" />}
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: currentEntry.signed ? '#4CAF50' : '#9E9E9E' }}>
-                        {currentEntry.signed ? 'Parent Signed ✓' : 'Awaiting Parent Signature'}
+                  {/* Parent signed status & Send button */}
+                  {currentEntry && (
+                    <div className="space-y-3">
+                      <button
+                        onClick={handleSendDiaryEntry}
+                        disabled={sendingDiary || (!currentEntry.subject && !currentEntry.homework && !currentEntry.teacher_comment)}
+                        className="w-full flex items-center justify-between gap-3 py-3 px-4 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+                        style={{
+                          background: 'linear-gradient(135deg, #2C5F8A, #1a3d5c)',
+                          minHeight: 44,
+                        }}>
+                        <div className="flex items-center gap-3">
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M2 9h14M9 2l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <span className="text-sm font-medium text-white">
+                            {sendingDiary ? 'Sending...' : 'Send Diary to Parent'}
+                          </span>
+                        </div>
+                        {sendingDiary && (
+                          <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        )}
+                      </button>
+                      
+                      <div className="flex items-center gap-3 py-2 px-2 rounded-xl transition-all"
+                        style={{ background: currentEntry.signed ? '#4CAF5015' : '#FFB74D15' }}>
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ background: currentEntry.signed ? '#4CAF50' : '#FFB74D' }}>
+                          {currentEntry.signed ? (
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path d="M2 6l2.5 2.5L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          ) : (
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <circle cx="6" cy="6" r="2" fill="white" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium" style={{ color: currentEntry.signed ? '#4CAF50' : '#FFB74D' }}>
+                            {currentEntry.signed ? 'Parent Signed ✓' : 'Awaiting Parent Signature'}
+                          </div>
+                          <div className="text-xs text-pencil-gray/50">
+                            {currentEntry.signed ? 'Parent confirmed receipt' : 'Parent will sign after reviewing'}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-pencil-gray/50">Parent marks this when work is ensured</div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
               <div className="h-2" style={{ background: 'linear-gradient(180deg, #EDE0C4 0%, #D4C5A9 100%)' }} />

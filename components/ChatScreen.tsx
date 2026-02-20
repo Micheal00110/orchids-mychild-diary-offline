@@ -130,37 +130,70 @@ export default function ChatScreen({ session, membership, classInfo, onBack }: P
           <>
             {messages.map((msg, i) => {
               const isMe = msg.sender_id === session.id
+              const isTeacherMsg = msg.sender_role === 'teacher'
               const prevMsg = messages[i - 1]
               const showDate = !prevMsg || new Date(msg.created_at).toDateString() !== new Date(prevMsg.created_at).toDateString()
+
+              // WhatsApp-style colors
+              // If I'm the sender, show my message on the right
+              // Teacher: green on left (received by parent) or right (sent by teacher)
+              // Parent: blue on left (received by teacher) or right (sent by parent)
+              let bgColor: string
+              let textColor: string
+              let bubbleStyle: React.CSSProperties = {}
+
+              if (isMe && isTeacherMsg) {
+                // I'm the teacher sending - green on right
+                bgColor = '#25D366'
+                textColor = 'white'
+                bubbleStyle.borderRadius = '18px 18px 4px 18px'
+              } else if (isMe && !isTeacherMsg) {
+                // I'm the parent sending - blue on right
+                bgColor = 'linear-gradient(135deg, #2C5F8A, #1a3d5c)'
+                textColor = 'white'
+                bubbleStyle.borderRadius = '18px 18px 4px 18px'
+              } else if (!isMe && isTeacherMsg) {
+                // Teacher sending - green on left
+                bgColor = '#25D366'
+                textColor = 'white'
+                bubbleStyle.borderRadius = '18px 18px 18px 4px'
+              } else {
+                // Parent sending - light blue/beige on left
+                bgColor = '#E7F3FF'
+                textColor = '#2C5F8A'
+                bubbleStyle.borderRadius = '18px 18px 18px 4px'
+              }
 
               return (
                 <div key={msg.id}>
                   {showDate && (
-                    <div className="flex items-center justify-center my-2">
+                    <div className="flex items-center justify-center my-4">
                       <span className="text-xs text-pencil-gray/40 px-3 py-1 rounded-full"
                         style={{ background: 'rgba(74,74,74,0.07)' }}>
                         {new Date(msg.created_at).toLocaleDateString('en-KE', { weekday: 'short', day: 'numeric', month: 'short' })}
                       </span>
                     </div>
                   )}
-                  <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-xs ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
+                  <div className="w-full flex mb-3" style={{ justifyContent: isMe ? 'flex-end' : 'flex-start' }}>
+                    <div className="flex flex-col gap-1" style={{ alignItems: isMe ? 'flex-end' : 'flex-start', maxWidth: '75%' }}>
                       {!isMe && (
-                        <span className="text-xs text-pencil-gray/50 px-1">
-                          {msg.sender_role === 'teacher' ? '🧑‍🏫 Teacher' : '👨‍👩‍👧 Parent'}
+                        <span className="text-xs px-2 mb-0.5" style={{ color: isTeacherMsg ? '#16A34A' : '#2C5F8A' }}>
+                          {isTeacherMsg ? '🧑‍🏫 Teacher' : '👨‍👩‍👧 Parent'}
                         </span>
                       )}
-                      <div className="px-4 py-3 rounded-2xl text-sm leading-relaxed"
+                      <div className="px-4 py-3 text-sm leading-relaxed break-words"
                         style={{
-                          background: isMe ? 'linear-gradient(135deg, #2C5F8A, #1a3d5c)' : '#FDF6E3',
-                          color: isMe ? 'white' : '#4A4A4A',
-                          borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                          boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                          background: bgColor,
+                          color: textColor,
+                          ...bubbleStyle,
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
                           fontFamily: 'var(--font-noto)',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
                         }}>
                         {msg.content}
                       </div>
-                      <span className="text-xs text-pencil-gray/40 px-1">
+                      <span className="text-xs px-2" style={{ color: '#4A4A4A', opacity: 0.7 }}>
                         {new Date(msg.created_at).toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

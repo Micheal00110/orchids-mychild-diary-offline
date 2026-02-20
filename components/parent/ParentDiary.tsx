@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getTodayISO, formatDisplayDate, type UserSession, type Membership, type ClassInfo } from '@/lib/store'
+import ParentInsights from './ParentInsights'
 
 interface DiaryEntry {
   id?: string
@@ -29,6 +30,8 @@ export default function ParentDiary({ session, membership, allMemberships, onSwi
   const [entry, setEntry] = useState<DiaryEntry | null>(null)
   const [signingLoading, setSigningLoading] = useState(false)
   const [savingMsg, setSavingMsg] = useState('')
+  const [messageText, setMessageText] = useState('')
+  const [sendingMessage, setSendingMessage] = useState(false)
 
   const loadEntry = useCallback(async () => {
     const { data } = await supabase
@@ -90,6 +93,37 @@ export default function ParentDiary({ session, membership, allMemberships, onSwi
     }
     setSigningLoading(false)
     setTimeout(() => setSavingMsg(''), 2500)
+  }
+
+  async function handleSendMessage() {
+    if (!messageText.trim()) return
+    setSendingMessage(true)
+    try {
+      const { data, error } = await supabase.from('messages').insert({
+        membership_id: membership.id,
+        class_id: classInfo.id,
+        sender_id: session.id,
+        sender_role: 'parent',
+        content: messageText.trim(),
+      }).select()
+
+      if (error) {
+        console.error('Error sending message:', error)
+        if (error.stack) console.error(error.stack)
+        console.error('Context - membership:', membership.id, 'class:', classInfo.id)
+        alert('Failed to send message. Please try again.')
+        return
+      }
+
+      if (data) {
+        setMessageText('')
+      }
+    } catch (err) {
+      console.error('Unexpected error sending message:', err)
+      alert('Failed to send message. Please try again.')
+    } finally {
+      setSendingMessage(false)
+    }
   }
 
   const isToday = selectedDate === getTodayISO()
@@ -178,8 +212,8 @@ export default function ParentDiary({ session, membership, allMemberships, onSwi
           Chat with {classInfo?.name} Teacher
         </button>
 
-        {/* Diary card */}
-        <div className="rounded-2xl overflow-hidden shadow-notebook" style={{ background: '#FDF6E3' }}>
+        {/* Diary card - now FIRST ELEMENT */}
+        <div className="rounded-2xl overflow-hidden shadow-notebook mb-4" style={{ background: '#FDF6E3' }}>
           {/* Notebook top binding */}
           <div className="h-3 flex gap-6 items-center px-8" style={{ background: '#EDE0C4' }}>
             {[...Array(6)].map((_, i) => (
@@ -209,34 +243,73 @@ export default function ParentDiary({ session, membership, allMemberships, onSwi
                 <div className="my-4 h-px" style={{ background: '#D4C5A9' }} />
               </>
             )}
+          </div>
+          <div className="h-2" style={{ background: 'linear-gradient(180deg, #EDE0C4 0%, #D4C5A9 100%)' }} />
+        </div>
 
-            {/* Parent Signature */}
-            <div className="flex items-center gap-4 py-2">
+        {/* Quick Message & Sign Section - now SECOND ELEMENT */}
+        <div className="rounded-2xl overflow-hidden shadow-notebook" style={{ background: '#FDF6E3' }}>
+          {/* Header */}
+          <div className="px-5 py-3 border-b border-rule-line">
+            <span className="font-semibold text-pencil-gray">{membership.child_name}</span>
+          </div>
+
+          {/* Message Input Section */}
+          <div className="px-5 py-4 border-b border-rule-line">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-base">💭</span>
+              <span className="text-xs font-semibold text-ink-blue uppercase tracking-wider">Quick Message</span>
+            </div>
+            <div className="flex gap-2 items-end">
+              <textarea
+                value={messageText}
+                onChange={(e) => { setMessageText(e.target.value); e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px' }}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage() } }}
+                placeholder="Ask teacher a question..."
+                rows={1}
+                className="flex-1 text-pencil-gray placeholder-pencil-gray/40 text-sm"
+                style={{ background: 'rgba(253,246,227,0.8)', border: '1px solid #D4C5A9', borderRadius: 8, padding: '8px 12px', fontFamily: 'var(--font-noto)', resize: 'none', outline: 'none', minHeight: 36 }}
+              />
               <button
-                onClick={handleSign}
-                disabled={signingLoading}
-                className="flex items-center gap-3 flex-1 active:scale-95 transition-transform disabled:opacity-60"
-                style={{ minHeight: 44 }}>
-                <div className="w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0"
-                  style={{ borderColor: entry?.signed ? '#4CAF50' : '#D4C5A9', background: entry?.signed ? '#4CAF50' : 'transparent' }}>
-                  {entry?.signed && (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8l3.5 3.5L13 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-sm" style={{ color: entry?.signed ? '#4CAF50' : '#4A4A4A' }}>
-                    {entry?.signed ? 'Work Ensured ✓' : 'Work Ensured'}
-                  </div>
-                  <div className="text-xs text-pencil-gray/60">Tap to {entry?.signed ? 'remove' : 'add'} your signature</div>
-                </div>
+                onClick={handleSendMessage}
+                disabled={!messageText.trim() || sendingMessage}
+                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center active:scale-95 transition-all disabled:opacity-40"
+                style={{ background: 'linear-gradient(135deg, #2C5F8A, #1a3d5c)', minHeight: 'auto' }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M2 9h14M9 2l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
-              {savingMsg && <span className="text-xs text-green-600 font-medium fade-in">{savingMsg}</span>}
             </div>
           </div>
 
-          <div className="h-2" style={{ background: 'linear-gradient(180deg, #EDE0C4 0%, #D4C5A9 100%)' }} />
+          {/* Sign/Ensure Work Section */}
+          {entry && (
+            <div className="px-5 py-4">
+              <button onClick={() => handleSign()}
+                disabled={signingLoading}
+                className="flex items-center gap-4 py-2 w-full active:scale-95 transition-transform disabled:opacity-60" style={{ minHeight: 44 }}>
+                <div className="w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0"
+                  style={{ borderColor: entry.signed ? '#4CAF50' : '#D4C5A9', background: entry.signed ? '#4CAF5020' : 'transparent' }}>
+                  {entry.signed ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M2 6l2.5 2.5L10 3" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : <div className="w-2 h-2 rounded-full bg-gray-400" />}
+                </div>
+                <div>
+                  <div className="text-sm font-medium" style={{ color: entry.signed ? '#4CAF50' : '#9E9E9E' }}>
+                    {entry.signed ? 'Work Ensured ✓' : 'Mark Work as Ensured'}
+                  </div>
+                  <div className="text-xs text-pencil-gray/50">{savingMsg || 'Sign to confirm'}</div>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Insights Section */}
+        <div className="mb-4">
+          <ParentInsights membership={membership} />
         </div>
 
         {isToday && (

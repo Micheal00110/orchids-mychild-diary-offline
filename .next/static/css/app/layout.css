@@ -511,6 +511,9 @@ video {
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
+.pointer-events-none{
+  pointer-events: none;
+}
 .fixed{
   position: fixed;
 }
@@ -578,6 +581,10 @@ video {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
 }
+.mx-5{
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
@@ -585,10 +592,6 @@ video {
 .my-16{
   margin-top: 4rem;
   margin-bottom: 4rem;
-}
-.my-2{
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 .my-4{
   margin-top: 1rem;
@@ -626,6 +629,9 @@ video {
 }
 .mb-8{
   margin-bottom: 2rem;
+}
+.ml-2{
+  margin-left: 0.5rem;
 }
 .ml-auto{
   margin-left: auto;
@@ -831,6 +837,15 @@ video {
 .animate-bounce{
   animation: bounce 1s infinite;
 }
+@keyframes spin{
+
+  to{
+    transform: rotate(360deg);
+  }
+}
+.animate-spin{
+  animation: spin 1s linear infinite;
+}
 .cursor-pointer{
   cursor: pointer;
 }
@@ -899,6 +914,11 @@ video {
 .gap-8{
   gap: 2rem;
 }
+.space-y-1 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
 .space-y-2 > :not([hidden]) ~ :not([hidden]){
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
@@ -947,6 +967,9 @@ video {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.break-words{
+  overflow-wrap: break-word;
+}
 .rounded{
   border-radius: 0.25rem;
 }
@@ -989,9 +1012,23 @@ video {
 .border-b{
   border-bottom-width: 1px;
 }
+.border-t{
+  border-top-width: 1px;
+}
+.border-gray-200{
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));
+}
 .border-rule-line{
   --tw-border-opacity: 1;
   border-color: rgb(212 197 169 / var(--tw-border-opacity, 1));
+}
+.border-white\/20{
+  border-color: rgb(255 255 255 / 0.2);
+}
+.border-t-white{
+  --tw-border-opacity: 1;
+  border-top-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 .bg-black\/20{
   background-color: rgb(0 0 0 / 0.2);
@@ -1018,6 +1055,9 @@ video {
 .bg-white\/40{
   background-color: rgb(255 255 255 / 0.4);
 }
+.bg-white\/50{
+  background-color: rgb(255 255 255 / 0.5);
+}
 .bg-white\/60{
   background-color: rgb(255 255 255 / 0.6);
 }
@@ -1029,6 +1069,12 @@ video {
 }
 .p-12{
   padding: 3rem;
+}
+.p-2{
+  padding: 0.5rem;
+}
+.p-3{
+  padding: 0.75rem;
 }
 .p-4{
   padding: 1rem;
@@ -1117,6 +1163,10 @@ video {
 .py-5{
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+}
+.py-6{
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 .py-8{
   padding-top: 2rem;
@@ -1261,6 +1311,18 @@ video {
 .tracking-widest{
   letter-spacing: 0.1em;
 }
+.text-gray-600{
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+}
+.text-gray-700{
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity, 1));
+}
+.text-gray-800{
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+}
 .text-green-600{
   --tw-text-opacity: 1;
   color: rgb(22 163 74 / var(--tw-text-opacity, 1));
@@ -1371,6 +1433,9 @@ video {
 }
 .ease-in-out{
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ease-out{
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
 :root {
@@ -1485,6 +1550,10 @@ button, a {
 
 .disabled\:opacity-60:disabled{
   opacity: 0.6;
+}
+
+.disabled\:opacity-50:disabled{
+  opacity: 0.5;
 }
 
 @media (min-width: 640px){

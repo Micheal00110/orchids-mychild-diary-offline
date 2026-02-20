@@ -57,23 +57,49 @@ export default function TeacherApp({ session, onLogout }: Props) {
   }
 
   async function loadMemberships(classId: string) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('class_memberships')
       .select('*, class:classes(*)')
       .eq('class_id', classId)
       .order('joined_at', { ascending: true })
-    if (data) setMemberships(data as Membership[])
+    if (error) {
+      console.error('Error loading memberships:', error)
+      return
+    }
+    if (data) {
+      console.log('Memberships loaded:', data)
+      setMemberships(data as Membership[])
+    }
   }
+
+  // Periodic refresh of memberships (safety net for real-time)
+  useEffect(() => {
+    if (!classInfo) return
+    // Reload memberships every 5 seconds to ensure sync
+    const interval = setInterval(() => {
+      loadMemberships(classInfo.id)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [classInfo?.id])
 
   // Subscribe to new memberships (parents joining)
   useEffect(() => {
     if (!classInfo) return
     const channel = supabase
       .channel('memberships-' + classInfo.id)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'class_memberships', filter: `class_id=eq.${classInfo.id}` }, () => {
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'class_memberships', 
+        filter: `class_id=eq.${classInfo.id}` 
+      }, (payload) => {
+        // When a parent joins, reload the memberships list
+        console.log('New membership detected:', payload)
         loadMemberships(classInfo.id)
       })
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Subscription status:', status)
+      })
     return () => { supabase.removeChannel(channel) }
   }, [classInfo?.id])
 
@@ -104,7 +130,7 @@ export default function TeacherApp({ session, onLogout }: Props) {
     <div className="flex flex-col min-h-screen max-w-md mx-auto relative">
       <main className="flex-1 pb-20">
         {view === 'diary' && (
-          <TeacherDiary session={session} classInfo={classInfo!} memberships={memberships} />
+          <TeacherDiary session={session} classInfo={classInfo!} memberships={memberships} onChat={(m) => { setChatMembership(m) }} />
         )}
         {view === 'students' && (
           <StudentsView

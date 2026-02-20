@@ -201,14 +201,27 @@ Now (Feb 2026)
 └─ You: Everything (product, marketing, sales)
 
 Month 4-5 (May 2026)
-└─ You + 1 part-time developer ($2.5-5k/year)
+└─ You + 1 part-time developer (~$2.3k-3.6k/year)
+   [Based on Kenya market rates: KES 25-40k/month for part-time]
 
 Month 8-9 (Sep 2026)
-└─ You + 1-2 developers + 1 customer success ($5-8k/year)
+└─ You + 1-2 developers + 1 customer success (~$8-12k/year)
+   [1 PT dev ($2.3-3.6k) + 1 FT dev ($5.5-7.7k) + 1 CS ($2.7-4.6k)]
 
 Month 12 (Dec 2026)
-└─ You + 2 developers + 1 customer success + 1 marketing ($8-15k/year)
+└─ You + 2 developers + 1 customer success + 1 marketing (~$16-24k/year)
+   [2 FT devs ($11-15.4k) + 1 CS ($2.7-4.6k) + 1 Marketing ($1.5-3k)]
 ```
+
+**Data Sources & Assumptions (Feb 2026):**
+- Part-time developer: KES 25-40k/month (~$190-305 USD) ➜ ~$2.3-3.6k/year
+- Junior FT developer: KES 40-60k/month (~$305-460 USD) ➜ ~$5.5-7.7k/year  
+- Mid-level FT developer: KES 60-85k/month (~$460-650 USD) ➜ ~$6.9-9.8k/year
+- Customer success specialist: KES 30-50k/month (~$230-385 USD) ➜ ~$2.7-4.6k/year
+- Marketing specialist: KES 15-30k/month (~$115-230 USD) ➜ ~$1.5-3k/year
+
+*Sources: Kenya tech salary surveys 2025-26, LinkedIn Kenya tech roles, local recruitment agencies (Fuzu, Nairobi Dev, Kenya Tech Community)*
+*Exchange rate assumed: ~1 USD = 130 KES (Feb 2026)*
 
 **Still capital-efficient vs $100k+ revenue!**
 
@@ -246,14 +259,14 @@ Month 12 (Dec 2026)
 ## 💡 YOUR UNIQUE POSITIONING
 
 ### The Positioning Statement
-*"MyChild Diary is the only real-time homework diary that connects teachers and parents without chaos. Teachers spend 60 seconds per entry. Parents see it live. No passwords. No passwords. No group chat noise. Just homework, done right."*
+*"MyChild Diary is the only real-time homework diary that connects teachers and parents without chaos. Teachers spend 60 seconds per entry. Parents see it live. No passwords. No group chat noise. Just homework, done right."*
 
 ### Why You're Different
 
 | vs Paper Diaries | vs WhatsApp | vs School Software |
 |---|---|---|
 | Real-time (not delayed) | Structured (not chaotic) | Simple (not complex) |
-| Searchable (not lost) | Professional (not informal) | Affordable (not $100-500/mo) |
+| Searchable (not lost) | Professional (not informal) | Affordable ($6/teacher vs $100-500/mo full-school software) |
 | Digital signatures (not handwritten) | Private (not group chat) | Mobile-first (not desktop) |
 
 ---
@@ -302,10 +315,10 @@ Month 12 (Dec 2026)
 Month 1-2 (Feb-Mar):    Beta testing, 500 users, $0 revenue
 Month 3-4 (Apr-May):    Launch freemium, 2,500 users, $300/mo
 Month 5-6 (Jun-Jul):    Growth phase, 5,000 users, $5-8k/mo
-Month 7-12 (Aug-Dec):   Scale phase, 12,000 users, $25k/mo
+Month 7-12 (Aug-Dec):   Scale phase, 10,000+ users, $25k/mo
 
 Year 1 Outcome:
-✓ 10,000+ active teachers
+✓ 10,000+ active teachers (across all schools)
 ✓ 300+ schools using platform
 ✓ 1,000+ paying customers
 ✓ $100,000+ revenue
